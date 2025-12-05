@@ -45,6 +45,31 @@ const NODE_RADIUS = 12;
 type AppPhase = 'idle' | 'training' | 'trained' | 'playing';
 type GraphType = 'regular' | 'complete' | 'erdos';
 
+interface RangeControlProps {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step?: number;
+  onChange: (val: number) => void;
+  disabled?: boolean;
+}
+
+const RangeControl: React.FC<RangeControlProps> = ({ label, value, min, max, step=1, onChange, disabled=false }) => (
+  <div className={`mb-4 ${disabled ? 'opacity-30 pointer-events-none' : ''}`}>
+      <div className="flex justify-between text-xs mb-1.5 font-medium text-slate-400">
+          <span>{label}</span>
+          <span className="text-cyan-400 font-mono">{value}</span>
+      </div>
+      <input 
+        type="range" min={min} max={max} step={step}
+        value={value} 
+        onChange={e => onChange(Number(e.target.value))}
+        className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-500 hover:accent-cyan-400 focus:outline-none"
+      />
+  </div>
+);
+
 export default function App() {
   // --- Configuration ---
   const [graphType, setGraphType] = useState<GraphType>('regular');
@@ -372,22 +397,6 @@ export default function App() {
           drawGraph(graphRef.current, currentBits, inspectorStep, animationPhase);
       }
   }, [currentBits, inspectorStep, animationPhase]);
-
-
-  const RangeControl = ({ label, value, min, max, step=1, onChange, disabled=false }) => (
-      <div className={`mb-4 ${disabled ? 'opacity-30 pointer-events-none' : ''}`}>
-          <div className="flex justify-between text-xs mb-1.5 font-medium text-slate-400">
-              <span>{label}</span>
-              <span className="text-cyan-400 font-mono">{value}</span>
-          </div>
-          <input 
-            type="range" min={min} max={max} step={step}
-            value={value} 
-            onChange={e => onChange(Number(e.target.value))}
-            className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-500 hover:accent-cyan-400 focus:outline-none"
-          />
-      </div>
-  );
 
   return (
     <div className="relative w-full h-screen bg-slate-950 text-slate-200 overflow-hidden flex">
